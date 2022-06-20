@@ -2,11 +2,14 @@ package com.parashchak.onlineshopspringboot.repository.jdbc.mapper;
 
 import com.parashchak.onlineshopspringboot.entity.Product;
 import lombok.SneakyThrows;
+import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.time.LocalDateTime;
 
+@Component
 public class ProductRowMapper implements RowMapper<Product> {
 
     @SneakyThrows
