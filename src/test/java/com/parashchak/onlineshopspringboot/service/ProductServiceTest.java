@@ -2,8 +2,7 @@ package com.parashchak.onlineshopspringboot.service;
 
 import com.parashchak.onlineshopspringboot.entity.Product;
 import com.parashchak.onlineshopspringboot.repository.ProductRepository;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,13 +10,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class ProductServiceTest {
@@ -156,8 +153,14 @@ class ProductServiceTest {
 
     @Test
     void givenNonExistingId_whenFindById_thenExceptionThrown() {
+        //prepare
         Mockito.when(productRepository.findById(5)).thenReturn(Optional.empty());
-        Assertions.assertThrows(IllegalStateException.class, () -> productService.findById(5));
+
+        //then
+        Exception exception = assertThrows(IllegalStateException.class, () -> productService.deleteById(5));
+        String expectedMessage = "product with id=5 not found";
+        String actualMessage = exception.getMessage();
+        assertEquals(actualMessage, expectedMessage);
     }
 
     @Test
@@ -183,8 +186,23 @@ class ProductServiceTest {
 
     @Test
     void givenNonExistingId_whenDeleteById_thenExceptionThrown() {
+        //prepare
         Mockito.when(productRepository.findById(5)).thenReturn(Optional.empty());
-        Assertions.assertThrows(IllegalStateException.class, () -> productService.deleteById(5));
+
+        //then
+        Exception exception = assertThrows(IllegalStateException.class, () -> productService.deleteById(5));
+        String expectedMessage = "product with id=5 not found";
+        String actualMessage = exception.getMessage();
+        assertEquals(actualMessage, expectedMessage);
+    }
+
+    @Test
+    void givenNonExistingId_whenDeleteById_thenProductRepositoryDeleteByIdNotCalled() {
+        //prepare
+        Mockito.when(productRepository.findById(5)).thenReturn(Optional.empty());
+
+        //then
+        verify(productRepository, never()).deleteById(anyInt());
     }
 
     @Test
@@ -209,14 +227,21 @@ class ProductServiceTest {
     @Test
     void givenNonExistingId_whenUpdate_thenExceptionThrown() {
         //prepare
-        Product product = Product.builder()
-                .id(5)
-                .name("product")
-                .price(500)
-                .description("productDescription")
-                .build();
-
         Mockito.when(productRepository.findById(5)).thenReturn(Optional.empty());
-        Assertions.assertThrows(IllegalStateException.class, () -> productService.update(5, product));
+
+        //then
+        Exception exception = assertThrows(IllegalStateException.class, () -> productService.deleteById(5));
+        String expectedMessage = "product with id=5 not found";
+        String actualMessage = exception.getMessage();
+        assertEquals(actualMessage, expectedMessage);
+    }
+
+    @Test
+    void givenNonExistingId_whenUpdate_thenProductRepositoryUpdateNotCalled() {
+        //prepare
+        Mockito.when(productRepository.findById(5)).thenReturn(Optional.empty());
+
+        //then
+        verify(productRepository, never()).update(anyInt(), any(Product.class));
     }
 }
