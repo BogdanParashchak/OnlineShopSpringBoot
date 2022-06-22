@@ -1,7 +1,7 @@
-package com.parashchak.onlineshopspringboot.service;
+package com.parashchak.online.shop.spring.boot.service;
 
-import com.parashchak.onlineshopspringboot.entity.Product;
-import com.parashchak.onlineshopspringboot.repository.ProductRepository;
+import com.parashchak.online.shop.spring.boot.entity.Product;
+import com.parashchak.online.shop.spring.boot.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

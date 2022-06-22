@@ -1,6 +1,6 @@
-package com.parashchak.onlineshopspringboot.service;
+package com.parashchak.online.shop.spring.boot.service;
 
-import com.parashchak.onlineshopspringboot.entity.Product;
+import com.parashchak.online.shop.spring.boot.entity.Product;
 
 import java.util.List;
 

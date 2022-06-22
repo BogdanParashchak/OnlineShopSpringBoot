@@ -1,9 +1,10 @@
-package com.parashchak.onlineshopspringboot.web;
+package com.parashchak.online.shop.spring.boot.web;
 
-import com.parashchak.onlineshopspringboot.entity.Product;
-import com.parashchak.onlineshopspringboot.service.ProductService;
+import com.parashchak.online.shop.spring.boot.service.ProductService;
+import com.parashchak.online.shop.spring.boot.entity.Product;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,7 +43,7 @@ public class ProductController {
     }
 
     @PutMapping("product/{id}")
-    public void update(@PathVariable("id") int id,
+    public void update(@PathVariable int id,
                        @RequestBody Product product) {
         productService.update(id, product);
         log.info("updated by id={} product: {}", id, product);

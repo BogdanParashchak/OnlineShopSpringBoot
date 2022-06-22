@@ -1,4 +1,4 @@
-package com.parashchak.onlineshopspringboot.entity;
+package com.parashchak.online.shop.spring.boot.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

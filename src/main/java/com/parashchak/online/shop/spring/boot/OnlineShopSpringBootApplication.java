@@ -1,4 +1,4 @@
-package com.parashchak.onlineshopspringboot;
+package com.parashchak.online.shop.spring.boot;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

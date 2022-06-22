@@ -1,6 +1,6 @@
-package com.parashchak.onlineshopspringboot.repository;
+package com.parashchak.online.shop.spring.boot.repository;
 
-import com.parashchak.onlineshopspringboot.entity.Product;
+import com.parashchak.online.shop.spring.boot.entity.Product;
 
 import java.util.List;
 import java.util.Optional;
