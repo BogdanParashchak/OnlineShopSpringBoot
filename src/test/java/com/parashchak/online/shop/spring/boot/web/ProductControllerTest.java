@@ -115,12 +115,13 @@ class ProductControllerTest {
 
         mockMvc.perform(post("/products")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\n" +
-                                 "\t\"name\":\"firstProduct\",\n" +
-                                 "\t\"price\":\"1000\",\n" +
-                                 "\t\"creationDate\":\"2000-01-01T00:00:00.000000\",\n" +
-                                 "\t\"description\":\"description\"\n" +
-                                 "}"))
+                        .content("""
+                                {
+                                \t"name":"firstProduct",
+                                \t"price":"1000",
+                                \t"creationDate":"2000-01-01T00:00:00.000000",
+                                \t"description":"description"
+                                }"""))
 
                 .andExpect(status().isOk());
 

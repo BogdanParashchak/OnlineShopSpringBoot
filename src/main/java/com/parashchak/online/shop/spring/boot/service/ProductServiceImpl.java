@@ -20,7 +20,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void add(Product product) {
-        productRepository.add(product);
+        productRepository.save(product);
     }
 
     @Override
@@ -37,7 +37,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void update(int id, Product product) {
-        findById(id);
-        productRepository.update(id, product);
+        Product foundProduct = findById(id);
+        foundProduct.setName(product.getName());
+        foundProduct.setPrice(product.getPrice());
+        foundProduct.setDescription(product.getDescription());
+        productRepository.save(foundProduct);
     }
 }

@@ -68,10 +68,7 @@ class ProductServiceTest {
         List<Product> actualProducts = productService.findAll();
 
         //then
-        assertEquals(expectedProducts.size(), actualProducts.size());
-        for (int i = 0; i < expectedProducts.size(); i++) {
-            assertEquals(expectedProducts.get(i), actualProducts.get(i));
-        }
+        assertEquals(expectedProducts, actualProducts);
     }
 
     @Test
@@ -88,7 +85,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void whenAdd_thenProductRepositoryAddMethodCalled() {
+    void whenAdd_thenProductRepositorySaveMethodCalled() {
         //prepare
         Product product = Product.builder()
                 .name("product")
@@ -102,7 +99,7 @@ class ProductServiceTest {
         ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
 
         //then
-        verify(productRepository).add(productArgumentCaptor.capture());
+        verify(productRepository).save(productArgumentCaptor.capture());
         Product capturedProduct = productArgumentCaptor.getValue();
         assertEquals(product, capturedProduct);
     }
@@ -206,7 +203,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void whenUpdate_thenProductRepositoryFindByIdAndUpdateCalled() {
+    void whenUpdate_thenProductRepositoryFindByIdAndSaveCalled() {
         //prepare
         Product product = Product.builder()
                 .name("product")
@@ -221,7 +218,7 @@ class ProductServiceTest {
 
         //then
         verify(productRepository).findById(5);
-        verify(productRepository).update(5, product);
+        verify(productRepository).save(product);
     }
 
     @Test
@@ -237,11 +234,11 @@ class ProductServiceTest {
     }
 
     @Test
-    void givenNonExistingId_whenUpdate_thenProductRepositoryUpdateNotCalled() {
+    void givenNonExistingId_whenUpdate_thenProductRepositorySaveNotCalled() {
         //prepare
         Mockito.when(productRepository.findById(5)).thenReturn(Optional.empty());
 
         //then
-        verify(productRepository, never()).update(anyInt(), any(Product.class));
+        verify(productRepository, never()).save(any(Product.class));
     }
 }
