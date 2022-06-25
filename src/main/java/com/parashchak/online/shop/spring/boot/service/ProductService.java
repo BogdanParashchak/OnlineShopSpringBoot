@@ -11,7 +11,11 @@ public interface ProductService {
 
     Product findById(int id);
 
+    List<Product> search(String text);
+
     void deleteById(int id);
 
     void update(int id, Product product);
+
+
 }

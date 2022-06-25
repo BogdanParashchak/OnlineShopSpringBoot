@@ -30,6 +30,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<Product> search(String text) {
+        return productRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(text, text);
+    }
+
+    @Override
     public void deleteById(int id) {
         findById(id);
         productRepository.deleteById(id);

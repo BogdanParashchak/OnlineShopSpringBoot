@@ -2,6 +2,7 @@ package com.parashchak.online.shop.spring.boot.web;
 
 import com.parashchak.online.shop.spring.boot.entity.Product;
 import com.parashchak.online.shop.spring.boot.service.ProductService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -29,10 +30,11 @@ class ProductControllerTest {
     @MockBean
     private ProductService productService;
 
-    @Test
-    void findAllTest() throws Exception {
+    private List<Product> expectedProducts;
 
-        //prepare
+    @BeforeEach
+    void setup() {
+
         Product firstProduct = Product.builder()
                 .id(1)
                 .name("firstProduct")
@@ -59,7 +61,13 @@ class ProductControllerTest {
                 .description("thirdProductDescription")
                 .build();
 
-        List<Product> expectedProducts = List.of(firstProduct, secondProduct, thirdProduct);
+        expectedProducts = List.of(firstProduct, secondProduct, thirdProduct);
+    }
+
+    @Test
+    void givenListOfProducts_whenFindAll_thenActualProductsReturned() throws Exception {
+
+        //prepare
         when(productService.findAll()).thenReturn(expectedProducts);
 
         //then
@@ -92,11 +100,10 @@ class ProductControllerTest {
     }
 
     @Test
-    void findAllOnEmptyListTest() throws Exception {
+    void givenEmptyListOfProducts_whenFindAll_thenEmptyJsonReturned() throws Exception {
 
         //prepare
-        List<Product> expectedProducts = new ArrayList<>();
-        when(productService.findAll()).thenReturn(expectedProducts);
+        when(productService.findAll()).thenReturn(new ArrayList<>());
 
         //then
         mockMvc.perform(get("/products")
@@ -111,7 +118,83 @@ class ProductControllerTest {
     }
 
     @Test
-    void addTest() throws Exception {
+    void givenListOfProductsToBeFound_whenSearch_thenActualProductsToBeFoundReturned() throws Exception {
+
+        //prepare
+        when(productService.search("description")).thenReturn(expectedProducts);
+
+        //then
+        mockMvc.perform(get("/products/search/description")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+
+                .andExpect(jsonPath("$.[0].id").value(1))
+                .andExpect(jsonPath("$.[0].name").value("firstProduct"))
+                .andExpect(jsonPath("$.[0].price").value(100))
+                .andExpect(jsonPath("$.[0].creationDate").value("+999999999-12-31T23:59:59.999999999"))
+                .andExpect(jsonPath("$.[0].description").value("firstProductDescription"))
+
+                .andExpect(jsonPath("$.[1].id").value(2))
+                .andExpect(jsonPath("$.[1].name").value("secondProduct"))
+                .andExpect(jsonPath("$.[1].price").value(200))
+                .andExpect(jsonPath("$.[1].creationDate").value("-999999999-01-01T00:00:00"))
+                .andExpect(jsonPath("$.[1].description").value("secondProductDescription"))
+
+                .andExpect(jsonPath("$.[2].id").value(3))
+                .andExpect(jsonPath("$.[2].name").value("thirdProduct"))
+                .andExpect(jsonPath("$.[2].price").value(300))
+                .andExpect(jsonPath("$.[2].creationDate").value("2000-01-01T00:00:00"))
+                .andExpect(jsonPath("$.[2].description").value("thirdProductDescription"));
+
+        verify(productService).search("description");
+    }
+
+    @Test
+    void givenSingleProductToBeFound_whenSearch_thenActualSingleProductReturned() throws Exception {
+
+        //prepare
+        when(productService.search("second")).thenReturn(List.of(expectedProducts.get(1)));
+
+        //then
+        mockMvc.perform(get("/products/search/second")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+
+                .andExpect(jsonPath("$.[0].id").value(2))
+                .andExpect(jsonPath("$.[0].name").value("secondProduct"))
+                .andExpect(jsonPath("$.[0].price").value(200))
+                .andExpect(jsonPath("$.[0].creationDate").value("-999999999-01-01T00:00:00"))
+                .andExpect(jsonPath("$.[0].description").value("secondProductDescription"));
+
+        verify(productService).search("second");
+    }
+
+    @Test
+    void givenListOfProducts_whenSearchTextDoesNotMatch_thenEmptyJsonReturned() throws Exception {
+
+        //prepare
+        when(productService.search("textWhichDoesNotMatch")).thenReturn(new ArrayList<>());
+
+        //then
+        mockMvc.perform(get("/products/search/textWhichDoesNotMatch")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isEmpty());
+
+        verify(productService).search("textWhichDoesNotMatch");
+    }
+
+    @Test
+    void whenAdd_thenResponseWithOkStatusSent() throws Exception {
 
         mockMvc.perform(post("/products")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -129,39 +212,29 @@ class ProductControllerTest {
     }
 
     @Test
-    void findByIdTest() throws Exception {
+    void givenListOfProducts_whenFindById_thenActualProductReturned() throws Exception {
 
         //prepare
-        Product product = Product.builder()
-                .id(5)
-                .name("product")
-                .price(100)
-                .creationDate(LocalDateTime.of(
-                        2000, 1, 1,
-                        0, 0, 0, 0))
-                .description("productDescription")
-                .build();
-
-        when(productService.findById(5)).thenReturn(product);
+        when(productService.findById(3)).thenReturn(expectedProducts.get(2));
 
         //then
-        mockMvc.perform(get("/product/5")
+        mockMvc.perform(get("/product/3")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
 
                 .andExpect(status().isOk())
 
-                .andExpect(jsonPath("$.id").value(5))
-                .andExpect(jsonPath("$.name").value("product"))
-                .andExpect(jsonPath("$.price").value(100))
+                .andExpect(jsonPath("$.id").value(3))
+                .andExpect(jsonPath("$.name").value("thirdProduct"))
+                .andExpect(jsonPath("$.price").value(300))
                 .andExpect(jsonPath("$.creationDate").value("2000-01-01T00:00:00"))
-                .andExpect(jsonPath("$.description").value("productDescription"));
+                .andExpect(jsonPath("$.description").value("thirdProductDescription"));
 
-        verify(productService).findById(5);
+        verify(productService).findById(3);
     }
 
     @Test
-    void findByIdThrowsException() throws Exception {
+    void givenNonExistingId_whenFindById_thenResponseWithNotFoundStatusSent() throws Exception {
 
         //prepare
         when(productService.findById(5)).thenThrow(
@@ -180,33 +253,23 @@ class ProductControllerTest {
     }
 
     @Test
-    void deleteByIdTest() throws Exception {
+    void whenDeleteById_thenResponseWithOkStatusSent() throws Exception {
 
         //prepare
-        Product product = Product.builder()
-                .id(5)
-                .name("product")
-                .price(100)
-                .creationDate(LocalDateTime.of(
-                        2000, 1, 1,
-                        0, 0, 0, 0))
-                .description("productDescription")
-                .build();
-
-        when(productService.findById(5)).thenReturn(product);
+        when(productService.findById(3)).thenReturn(expectedProducts.get(2));
 
         //then
-        mockMvc.perform(MockMvcRequestBuilders.delete("/product/5")
+        mockMvc.perform(MockMvcRequestBuilders.delete("/product/3")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
 
                 .andExpect(status().isOk());
 
-        verify(productService).deleteById(5);
+        verify(productService).deleteById(3);
     }
 
     @Test
-    void deleteByIdTestThrowsException() throws Exception {
+    void givenNonExistingId_whenDeleteById_thenResponseWithNotFoundStatusSent() throws Exception {
 
         //prepare
         when(productService.findById(5)).thenThrow(
@@ -226,23 +289,13 @@ class ProductControllerTest {
     }
 
     @Test
-    void updateTest() throws Exception {
+    void whenUpdate_thenResponseWithOkStatusSent() throws Exception {
 
         //prepare
-        Product product = Product.builder()
-                .id(5)
-                .name("firstProduct")
-                .price(100)
-                .creationDate(LocalDateTime.of(
-                        2000, 1, 1,
-                        0, 0, 0, 0))
-                .description("productDescription")
-                .build();
-
-        when(productService.findById(5)).thenReturn(product);
+        when(productService.findById(1)).thenReturn(expectedProducts.get(0));
 
         //then
-        mockMvc.perform(put("/product/5")
+        mockMvc.perform(put("/product/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -254,14 +307,14 @@ class ProductControllerTest {
 
                 .andExpect(status().isOk());
 
-        verify(productService).update(eq(5), any(Product.class));
+        verify(productService).update(eq(1), any(Product.class));
     }
 
     @Test
-    void updateTestException() throws Exception {
+    void givenNonExistingId_whenUpdate_thenResponseWithNotFoundStatusSent() throws Exception {
 
         //prepare
-        doThrow(new IllegalStateException("product with id=5 not found")).when(productService).update(anyInt(), any(Product.class));
+        doThrow(new IllegalStateException("product with id=5 not found")).when(productService).update(eq(5), any(Product.class));
 
         //then
         mockMvc.perform(put("/product/5")
@@ -278,6 +331,6 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.status").value("NOT_FOUND"))
                 .andExpect(jsonPath("$.message").value("product with id=5 not found"));
 
-        verify(productService).update(anyInt(), any(Product.class));
+        verify(productService).update(eq(5), any(Product.class));
     }
 }
