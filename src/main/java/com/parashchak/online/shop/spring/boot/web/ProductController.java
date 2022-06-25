@@ -4,7 +4,6 @@ import com.parashchak.online.shop.spring.boot.service.ProductService;
 import com.parashchak.online.shop.spring.boot.entity.Product;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,7 +36,7 @@ public class ProductController {
     }
 
     @GetMapping("/products/search/{text}")
-    public List<Product>  searchByText(@PathVariable String text) {
+    public List<Product> searchByText(@PathVariable String text) {
         List<Product> products = productService.search(text);
         log.info("found products: {}", products);
         return products;
