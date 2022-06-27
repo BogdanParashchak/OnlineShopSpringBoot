@@ -80,6 +80,7 @@ class ProductRepositoryTest {
     }
 
     @Test
+    @DataSet("products.yml")
     @ExpectedDataSet("single_product.yml")
     void whenSave_thenProductSaved() {
 
