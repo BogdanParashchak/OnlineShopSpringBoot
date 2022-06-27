@@ -9,5 +9,4 @@ class OnlineShopSpringBootApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }

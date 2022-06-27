@@ -28,7 +28,7 @@ public class ProductController {
         log.info("added product: {}", product);
     }
 
-    @GetMapping(path = "product/{id}")
+    @GetMapping(path = "/product/{id}")
     public Product findById(@PathVariable int id) {
         Product product = productService.findById(id);
         log.info("found by id={} product: {}", id, product);
@@ -42,13 +42,13 @@ public class ProductController {
         return products;
     }
 
-    @DeleteMapping(path = "product/{id}")
+    @DeleteMapping(path = "/product/{id}")
     public void deleteById(@PathVariable int id) {
         productService.deleteById(id);
         log.info("deleted product by id={}", id);
     }
 
-    @PutMapping("product/{id}")
+    @PutMapping("/product/{id}")
     public void update(@PathVariable int id,
                        @RequestBody Product product) {
         productService.update(id, product);

@@ -1,0 +1,11 @@
+PRODUCTS:
+  - ID: 1
+    NAME: "firstProduct"
+    PRICE: 100
+    CREATION_DATE: '1000-01-01 01:01:01'
+    DESCRIPTION: "firstProductDescription"
+  - ID: 3
+    NAME: "thirdProduct"
+    PRICE: 300
+    CREATION_DATE: '3000-01-01 01:01:01'
+    DESCRIPTION: "thirdProductDescription"

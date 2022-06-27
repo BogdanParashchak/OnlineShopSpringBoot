@@ -1,0 +1,6 @@
+PRODUCTS:
+  - ID: 1
+    NAME: "product"
+    PRICE: 500
+    CREATION_DATE: '5000-01-01 01:01:01'
+    DESCRIPTION: "productDescription"

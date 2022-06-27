@@ -125,7 +125,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void givenSingleProductToBeFound_whenSearch_thenActualSingleProductReturned() throws Exception {
+    void givenSingleProductToBeFound_whenSearch_thenActualSingleProductReturned() {
 
         //prepare
         Product expectedProduct = expectedProducts.get(1);
@@ -272,7 +272,8 @@ class ProductServiceTest {
         Mockito.when(productRepository.findById(5)).thenReturn(Optional.empty());
 
         //then
-        Exception exception = assertThrows(IllegalStateException.class, () -> productService.deleteById(5));
+        Exception exception = assertThrows(IllegalStateException.class,
+                () -> productService.update(5, expectedProducts.get(1)));
         String expectedMessage = "product with id=5 not found";
         String actualMessage = exception.getMessage();
         assertEquals(actualMessage, expectedMessage);
@@ -284,7 +285,10 @@ class ProductServiceTest {
         //prepare
         Mockito.when(productRepository.findById(5)).thenReturn(Optional.empty());
 
+
         //then
+        Exception exception = assertThrows(IllegalStateException.class,
+                () -> productService.update(5, expectedProducts.get(1)));
         verify(productRepository, never()).save(any(Product.class));
     }
 }
